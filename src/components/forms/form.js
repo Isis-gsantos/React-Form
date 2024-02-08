@@ -21,7 +21,7 @@ function MyForm() {
 
     const generateErrorMessage = fieldName => {
         return {
-            required: `${fieldName} is required`,
+            required: `${fieldName} é obrigatório`,
             pattern: fieldName === 'email' ? 'Invalid email format' : null
         };
     };
@@ -45,7 +45,7 @@ function MyForm() {
                             <div className='form flex'>
                                 <label htmlFor='name'>Nome</label>
                                 <input
-                                    {...register("firstName", generateErrorMessage("First Name"))}
+                                    {...register("firstName", generateErrorMessage("Nome"))}
                                     placeholder="Nome"
                                     id='name'
                                     autoComplete='off'
@@ -57,7 +57,7 @@ function MyForm() {
                             <div className='form flex'>
                                 <label htmlFor='sobrenome'>Sobrenome</label>
                                 <input
-                                    {...register("lastName", generateErrorMessage("Last Name"))}
+                                    {...register("lastName", generateErrorMessage("Sobrenome"))}
                                     placeholder="Sobrenome"
                                     id='sobrenome'
                                     autoComplete='off'
@@ -69,7 +69,7 @@ function MyForm() {
                             <div className='form flex'>
                                 <label htmlFor='email'>E-mail</label>
                                 <input
-                                    {...register("email", generateErrorMessage("Email"))}
+                                    {...register("email", generateErrorMessage("E-mail"))}
                                     placeholder="E-mail"
                                     id='email'
                                     autoComplete='off'
@@ -81,7 +81,7 @@ function MyForm() {
                             <div className='form flex'>
                                 <label htmlFor='password'>Senha</label>
                                 <input
-                                    {...register("password", generateErrorMessage("Password"))}
+                                    {...register("password", generateErrorMessage("Senha"))}
                                     placeholder="Senha"
                                     id='password'
                                     autoComplete='off'
