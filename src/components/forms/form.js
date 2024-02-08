@@ -1,86 +1,107 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import '../css/style.css'
+import minhaImagem from '../images/login.jpg'
+import verified from '../images/verified.png'
 
 function MyForm() {
-    const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
     const [loading, setLoading] = useState(false);
-    //o useState controla o estado do submitedSuceccessfully e do loading, que no caso estão como false, mas ao usar o set depois que o formulário foi enviado com sucesso no onSubmit eles vão mudar o estado para true, fazendo com que a mensagem e o loading sejam exibidos na tela em vez do formulário
 
     const onSubmit = data => {
         console.log(data);
-        // Define o estado de carregamento como true ao iniciar o envio do formulário
         setLoading(true);
 
-        // Simula uma operação assíncrona, como enviar os dados para um servidor
         setTimeout(() => {
-            // Após 2 segundos, define o estado para indicar que o formulário foi enviado com sucesso
             setSubmittedSuccessfully(true);
-            // Define o estado de carregamento como false após o envio bem-sucedido do formulário
             setLoading(false);
         }, 1000);
     };
 
-    // Função para obter a classe de erro condicionalmente
-    const getErrorClass = fieldName => errors[fieldName] ? 'error' : '';
-    //No código que forneci, fieldName é um parâmetro de uma função chamada getErrorClass. Quando você chama essa função passando o nome de um campo como argumento, o valor desse nome é atribuído ao parâmetro fieldName.
+    const generateErrorMessage = fieldName => {
+        return {
+            required: `${fieldName} is required`,
+            pattern: fieldName === 'email' ? 'Invalid email format' : null
+        };
+    };
 
     return (
         <div className='container'>
             {submittedSuccessfully ? (
                 <div className='success-message'>
+                    <img src={verified} alt='Verificado' />
                     <h2>Formulário Enviado com Sucesso!</h2>
                     <p>Obrigado por enviar o formulário.</p>
                 </div>
             ) : (
-                <div>
-                    <form onSubmit={handleSubmit(onSubmit)} className='flex'>
-                        {/* Renderiza os inputs independentes e aplica a classe de erro de forma otimizada */}
-                        <div className='input flex'>
-                            <label htmlFor='name'>Nome</label>
-                            <input
-                                {...register("firstName", { required: true })}
-                                placeholder="First Name"
-                                id='name'
-                                className={getErrorClass("firstName")}
-                            />
-                            {errors.firstName && <span className='error-message'>First Name is required</span>}
-                        </div>
+                <div className='form-sign-up'>
+                    <div>
+                        <img src={minhaImagem} alt='imagem de uma pessoa se cadastrando pelo celular'/>
+                    </div>
+                    <section>
+                        <h1>Inscreva-se</h1>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <div className='form flex'>
+                                <label htmlFor='name'>Nome</label>
+                                <input
+                                    {...register("firstName", generateErrorMessage("First Name"))}
+                                    placeholder="Nome"
+                                    id='name'
+                                    autoComplete='off'
+                                    className={errors.firstName ? 'error' : ''}
+                                />
+                                {errors.firstName && <span className='error-message'>{errors.firstName.message}</span>}
+                            </div>
 
-                        <div className='input flex'>
-                            <label htmlFor='sobrenome'>Sobrenome</label>
-                            <input
-                                {...register("lastName", { required: true })}
-                                placeholder="Last Name"
-                                id='sobrenome'
-                                className={getErrorClass("lastName")}
-                            />
-                            {errors.lastName && <span className='error-message'>Last Name is required</span>}
-                        </div>
+                            <div className='form flex'>
+                                <label htmlFor='sobrenome'>Sobrenome</label>
+                                <input
+                                    {...register("lastName", generateErrorMessage("Last Name"))}
+                                    placeholder="Sobrenome"
+                                    id='sobrenome'
+                                    autoComplete='off'
+                                    className={errors.lastName ? 'error' : ''}
+                                />
+                                {errors.lastName && <span className='error-message'>{errors.lastName.message}</span>}
+                            </div>
 
-                        <div className='input flex'>
-                            <label htmlFor='email'>E-mail</label>
-                            <input
-                                {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
-                                placeholder="Email"
-                                id='email'
-                                className={getErrorClass("email")}
-                            />
-                            {errors.email && <span className='error-message'>Invalid email format</span>}
-                        </div>
+                            <div className='form flex'>
+                                <label htmlFor='email'>E-mail</label>
+                                <input
+                                    {...register("email", generateErrorMessage("Email"))}
+                                    placeholder="E-mail"
+                                    id='email'
+                                    autoComplete='off'
+                                    className={errors.email ? 'error' : ''}
+                                />
+                                {errors.email && <span className='error-message'>{errors.email.message}</span>}
+                            </div>
 
-                        <button type="submit" disabled={loading}>
-                            {loading ? 'Enviando...' : 'Submit'}
-                        </button>
-                    </form>
-                    {loading && <p>Carregando...</p>}
+                            <div className='form flex'>
+                                <label htmlFor='password'>Senha</label>
+                                <input
+                                    {...register("password", generateErrorMessage("Password"))}
+                                    placeholder="Senha"
+                                    id='password'
+                                    autoComplete='off'
+                                    type='password'
+                                    className={errors.password ? 'error' : ''}
+                                />
+                                {errors.password && <span className='error-message'>{errors.password.message}</span>}
+                            </div>
+
+                            <button className='btn' type="submit" disabled={loading}>
+                                {loading ? 'Enviando...' : 'Submit'}
+                            </button>
+                        </form>
+                        {loading && <p>Carregando...</p>}
+                    </section>
+
                 </div>
             )}
         </div>
     );
-    //Se submittedSuccessfully for verdadeiro, renderizamos uma mensagem de sucesso, caso contrário, renderizamos o formulário. Essa é uma maneira simples e eficaz de alternar entre a exibição do formulário e a exibição de uma mensagem de sucesso após a submissão.
-    //a validação é feita por causa do operador ternário ?, que vai fazer essa verificação como se fosse um if else
 }
 
 export default MyForm;
