@@ -63,6 +63,26 @@ input:focus {
     font-weight: 300;
 }
 
+.password-input-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.password-input-container input {
+    width: 100%;
+}
+
+.password-toggle {
+    background: none;
+    position: absolute;
+    right: 5px; /* Ajuste a posição conforme necessário */
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+
 .error-message {
     color: var(--red);
     margin-top: -8px;

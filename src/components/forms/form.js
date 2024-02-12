@@ -1,34 +1,32 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import '../css/style.css'
-import minhaImagem from '../images/login.jpg'
-import verified from '../images/verified.png'
+import '../css/style.css';
+import minhaImagem from '../images/login.jpg';
+import verified from '../images/verified.png';
 
 function MyForm() {
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState({ submittedSuccessfully: false, loading: false, showPassword: false });
 
     const onSubmit = data => {
         console.log(data);
-        setLoading(true);
+        setStatus({ ...status, loading: true });
 
         setTimeout(() => {
-            setSubmittedSuccessfully(true);
-            setLoading(false);
+            setStatus({ submittedSuccessfully: true, loading: false });
         }, 1000);
     };
 
     const generateErrorMessage = fieldName => {
         return {
             required: `${fieldName} é obrigatório`,
-            pattern: fieldName === 'email' ? 'Invalid email format' : null
+            pattern: fieldName === 'email' ? 'Formato de e-mail inválido' : null
         };
     };
 
     return (
         <div className='container'>
-            {submittedSuccessfully ? (
+            {status.submittedSuccessfully ? (
                 <div className='success-message'>
                     <img src={verified} alt='Verificado' />
                     <h2>Formulário Enviado com Sucesso!</h2>
@@ -37,7 +35,7 @@ function MyForm() {
             ) : (
                 <div className='form-sign-up'>
                     <div>
-                        <img src={minhaImagem} alt='imagem de uma pessoa se cadastrando pelo celular'/>
+                        <img src={minhaImagem} alt='imagem de uma pessoa se cadastrando pelo celular' />
                     </div>
                     <section>
                         <h1>Inscreva-se</h1>
@@ -80,24 +78,32 @@ function MyForm() {
 
                             <div className='form flex'>
                                 <label htmlFor='password'>Senha</label>
-                                <input
-                                    {...register("password", generateErrorMessage("Senha"))}
-                                    placeholder="Senha"
-                                    id='password'
-                                    autoComplete='off'
-                                    type='password'
-                                    className={errors.password ? 'error' : ''}
-                                />
+                                <div className="password-input-container">
+                                    <input
+                                        {...register("password", generateErrorMessage("Senha"))}
+                                        placeholder="Senha"
+                                        id='password'
+                                        autoComplete='off'
+                                        type={status.showPassword ? 'text' : 'password'}
+                                        className={errors.password ? 'error' : ''}
+                                    />
+                                    <button
+                                        type="button"
+                                        className='password-toggle'
+                                        onClick={() => setStatus({ ...status, showPassword: !status.showPassword })}
+                                    >
+                                        {status.showPassword ? <i className="fas fa-eye"></i> : <i className="fas fa-eye-slash"></i>}
+                                    </button>
+                                </div>
                                 {errors.password && <span className='error-message'>{errors.password.message}</span>}
                             </div>
 
-                            <button className='btn' type="submit" disabled={loading}>
-                                {loading ? 'Enviando...' : 'Submit'}
+                            <button className='btn' type="submit" disabled={status.loading}>
+                                {status.loading ? 'Enviando...' : 'Submit'}
                             </button>
                         </form>
-                        {loading && <p>Carregando...</p>}
+                        {status.loading && <p>Carregando...</p>}
                     </section>
-
                 </div>
             )}
         </div>
